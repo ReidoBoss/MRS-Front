@@ -4,13 +4,16 @@
     <ul>
       <li v-for="dataItem in arduinoData" :key="dataItem">{{ dataItem }}</li>
     </ul>
+    <input type="text" v-model="messageToSend" placeholder="Type message to send">
+    <button @click="sendMessage">Send Message</button>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 
 const arduinoData = ref([]);
+const messageToSend = ref('');
 
 const socket = new WebSocket('ws://172.16.30.48:8080');
 
@@ -25,4 +28,9 @@ socket.addEventListener('message', (event) => {
 socket.addEventListener('error', (error) => {
   console.error('WebSocket error:', error);
 });
+
+const sendMessage = () => {
+  socket.send(messageToSend.value);
+  messageToSend.value = ''; 
+};
 </script>
